@@ -80,6 +80,7 @@ def get_hello():
         temperature = "N/A"
         forecast = []
 
+    print(">>> APP_VERSION is:", os.getenv("APP_VERSION"))
     return {
         "hostname": hostname,
         "datetime": dhaka_time,
