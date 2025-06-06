@@ -84,7 +84,7 @@ def get_hello():
     return {
         "hostname": hostname,
         "datetime": dhaka_time,
-        "version": "v1.0",
+        "version": os.getenv("APP_VERSION", "dev"),
         "weather": {
             "dhaka": {
                 "temperature": temperature,
