@@ -1,8 +1,8 @@
-name: Release → build & deploy
+name: Release → build & verify
 
 on:
   release:
-    types: [published]              # fires only when you press “Publish release”
+    types: [published]  # Trigger only when you publish a release
 
 env:
   REGISTRY: docker.io
@@ -29,7 +29,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build & push
+      - name: Build & push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -48,6 +48,7 @@ jobs:
         run: |
           docker run -d --name test -e APP_VERSION=${{ env.RELEASE_TAG }} -p 18000:8000 ${{ env.IMAGE_NAME }}:${{ env.RELEASE_TAG }}
           sleep 10
+
       - name: Check /api/hello version matches tag
         run: |
           ver=$(curl -s http://localhost:18000/api/hello | jq -r '.version')
@@ -55,36 +56,6 @@ jobs:
             echo "Version mismatch: $ver vs ${{ env.RELEASE_TAG }}"
             exit 1
           fi
-      - run: docker rm -f test
 
-  deploy:
-    needs: verify-version
-    runs-on: ubuntu-latest
-    steps:
-      - name: Copy docker-compose to server
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          source: "docker-compose.yaml"
-          target: "~/fastapi-weather/"
-
-      - name: SSH → pull new image & reload with zero downtime
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: |
-            cd ~/fastapi-weather
-            export APP_VERSION=${{ env.RELEASE_TAG }}
-            export IMAGE_NAME=${{ env.IMAGE_NAME }}
-            docker compose pull api
-            # Run second instance on a spare port, wait healthy, then swap (poor-man's blue/green)
-            docker compose up -d --no-deps --scale api=2 --force-recreate
-            docker compose ps
-            # Optional: remove old replica after confirming traffic switch
-            sleep 10
-            docker compose up -d --no-deps --scale api=1 --force-recreate
-            docker image prune -f
+      - name: Cleanup test container
+        run: docker rm -f test
