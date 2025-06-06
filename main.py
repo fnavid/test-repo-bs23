@@ -8,6 +8,7 @@ import os
 API_VERSION = os.getenv("APP_VERSION", "dev")
 app = FastAPI()
 
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to FastAPI server for weather!"}
@@ -92,4 +93,3 @@ def get_hello():
         }
 
     }
-
