@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  app:
+    image: "${IMAGE_NAME:-fastapi-weather}:${APP_VERSION:-dev}"
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app  # Mount current directory to enable live reload during development
+    environment:
+      - PYTHONUNBUFFERED=1
+      - APP_VERSION=${APP_VERSION:-dev}
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fs http://localhost:8000/api/health || exit 1" ]
+      interval: 30s
+      retries: 3
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
