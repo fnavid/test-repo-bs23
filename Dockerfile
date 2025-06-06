@@ -21,7 +21,8 @@ COPY . .
 # Expose the port FastAPI will run on
 EXPOSE 8000
 
-ENV APP_VERSION = dev
+ARG APP_VERSION=dev
+ENV APP_VERSION=$APP_VERSION
 
 # Run the application with Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
