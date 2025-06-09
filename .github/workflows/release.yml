@@ -67,9 +67,9 @@ jobs:
       - name: Copy docker-compose.yaml to VM
         uses: appleboy/scp-action@v0.1.4
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
           source: docker-compose.yaml
           target: /home/${{ secrets.SSH_USER }}/fastapi-weather/
           port: 22
