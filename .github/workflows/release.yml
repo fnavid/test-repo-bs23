@@ -16,11 +16,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up QEMU (multi-arch)
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        with:
-          install: true
-          driver: docker
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -37,7 +37,8 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:${{ env.RELEASE_TAG }}
             ${{ env.IMAGE_NAME }}:latest
-          builder: default
+          build-args: |
+            APP_VERSION=${{ env.RELEASE_TAG }}
 
   verify-version:
     needs: build-push
@@ -70,15 +71,13 @@ jobs:
           pwd
           ls -al
           ls -al docker-compose.yaml
-      - name: Copy docker-compose.yml to VM
+      - name: Copy docker-compose.yaml to VM
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
-          source: .
+          source: ./docker-compose.yaml
           target: /home/${{ secrets.DEPLOY_USER }}/fastapi-weather/
           port: 22
-          strip_components: 0
-          scp_args: "-r --include='docker-compose.yml' --exclude='*'"
           debug: true
