@@ -64,6 +64,8 @@ jobs:
     needs: verify-version
     runs-on: self-hosted
     steps:
+      - name: Show repo files
+        run: ls -al
       - name: Copy docker-compose.yaml to VM
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -71,6 +73,6 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           source: docker-compose.yaml
-          target: /home/${{ secrets.SSH_USER }}/fastapi-weather/
+          target: /home/${{ secrets.DEPLOY_USER }}/fastapi-weather/
           port: 22
           debug: true
