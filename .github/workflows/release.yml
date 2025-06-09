@@ -71,7 +71,7 @@ jobs:
           pwd
           ls -al
           ls -al docker-compose.yaml
-      - name: Copy docker-compose.yaml to VM
+      - name: Copy docker-compose.yml to VM
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -81,5 +81,5 @@ jobs:
           target: /home/${{ secrets.DEPLOY_USER }}/fastapi-weather/
           port: 22
           strip_components: 0
-          scp_args: "-r --include='docker-compose.yaml' --exclude='*'"
+          scp_args: "-r --include='docker-compose.yml' --exclude='*'"
           debug: true
