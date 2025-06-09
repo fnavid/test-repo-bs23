@@ -71,5 +71,6 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: docker-compose.yaml
-          target: ~/fastapi-weather/
+          target: /home/${{ secrets.SSH_USER }}/fastapi-weather/
           port: 22
+          debug: true
