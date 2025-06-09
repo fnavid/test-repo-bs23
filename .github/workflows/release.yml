@@ -68,10 +68,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Show repo files
         run: |
-          echo "Listing files in workspace root:"
+          pwd
           ls -al
-          echo "Searching for docker-compose files:"
-          find . -name 'docker-compose.*'
+          ls -al docker-compose.yaml
       - name: Copy docker-compose.yaml to VM
         uses: appleboy/scp-action@v0.1.4
         with:
