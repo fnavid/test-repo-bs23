@@ -77,7 +77,9 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
-          source: ./docker-compose.yaml
+          source: .
           target: /home/${{ secrets.DEPLOY_USER }}/fastapi-weather/
           port: 22
+          strip_components: 0
+          scp_args: "-r --include='docker-compose.yaml' --exclude='*'"
           debug: true
