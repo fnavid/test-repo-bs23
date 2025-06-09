@@ -64,6 +64,8 @@ jobs:
     needs: verify-version
     runs-on: self-hosted
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Show repo files
         run: |
           echo "Listing files in workspace root:"
