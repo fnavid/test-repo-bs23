@@ -29,13 +29,13 @@ jobs:
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
 
-      - name: Terraform Init (no backend)
-        run: terraform init -backend=false
+      - name: Terraform Init
+        run: terraform init -input=false -reconfigure
 
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform Plan (no refresh)
+      - name: Terraform Plan
         run: terraform plan -refresh=false
 
       - name: Install kubeval
