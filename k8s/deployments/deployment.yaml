@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-weather
+  labels:
+    app: fastapi-weather
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi-weather
+  template:
+    metadata:
+      labels:
+        app: fastapi-weather
+    spec:
+      containers:
+      - name: fastapi-container
+        image: fnavid/fastapi-weather:latest
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - secretRef:
+            name: weather-api-secret  # defined earlier
