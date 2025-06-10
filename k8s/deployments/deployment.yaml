@@ -20,5 +20,7 @@ spec:
         ports:
         - containerPort: 8000
         envFrom:
+        - configMapRef:
+            name: fastapi-weather-config  # defined in configs/configmap.yaml
         - secretRef:
             name: weather-api-secret  # defined earlier
