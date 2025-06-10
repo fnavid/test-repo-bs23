@@ -1,0 +1,40 @@
+name: Terraform & Kubernetes Validate
+
+on:
+  push:
+    paths:
+      - 'terraform/**'
+      - 'backend/**'
+      - 'k8s/**'
+  pull_request:
+    paths:
+      - 'terraform/**'
+      - 'backend/**'
+      - 'k8s/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform fmt check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
+      - name: Validate Kubernetes manifests
+        run: |
+          find k8s/ -name '*.yaml' -exec kubectl apply --dry-run=client -f {} \;
