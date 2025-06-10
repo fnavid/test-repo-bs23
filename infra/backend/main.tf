@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "tf_state" {
-  bucket = "my-terraform-state-fateen"  # MUST be globally unique
+  bucket = "my-terraform-state-fateen" # MUST be globally unique
   versioning {
     enabled = true
   }
